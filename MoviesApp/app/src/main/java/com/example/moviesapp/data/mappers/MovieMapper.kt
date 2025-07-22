@@ -6,6 +6,30 @@ import com.example.moviesapp.data.local.MovieEntity
 import com.example.moviesapp.domain.model.Movie
 
 
+fun MovieDto.toMovie(
+    category: String?
+): Movie {
+    return Movie(
+        backdrop_path = backdrop_path ?: "",
+        original_language = original_language ?: "",
+        overview = overview ?: "",
+        poster_path = poster_path ?: "",
+        release_date = release_date ?: "",
+        title = title ?: "",
+        vote_average = vote_average ?: 0.0,
+        popularity = popularity ?: 0.0,
+        vote_count = vote_count ?: 0,
+        video = video ?: false,
+        id = id ?: -1,
+        adult = adult ?: false,
+        original_title = original_title ?: "",
+
+        category = category ?: "",
+
+        genre_ids = genre_ids ?: emptyList()
+    )
+}
+
 fun MovieDto.toMovieEntity(
     category: String
 ): MovieEntity {
@@ -35,7 +59,7 @@ fun MovieDto.toMovieEntity(
 }
 
 fun MovieEntity.toMovie(
-    category: String
+    category: String?
 ): Movie {
     return Movie(
         backdrop_path = backdrop_path,
@@ -52,7 +76,7 @@ fun MovieEntity.toMovie(
         adult = adult,
         original_title = original_title,
 
-        category = category,
+        category = category ?: "",
 
         genre_ids = try {
             genre_ids.split(",").map { it.toInt() }

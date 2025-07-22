@@ -1,17 +1,18 @@
 package com.example.moviesapp.data.repository
 
-import com.example.moviesapp.data.mappers.toMovie
-import com.example.moviesapp.domain.model.Movie
-import com.example.moviesapp.utils.Resource
-import com.example.moviesapp.domain.repository.MovieListRepository
 import com.example.moviesapp.data.local.MovieDatabase
+import com.example.moviesapp.data.mappers.toMovie
+import com.example.moviesapp.data.mappers.toMovieEntity
 import com.example.moviesapp.data.remote.MovieApi
+import com.example.moviesapp.domain.model.Movie
+import com.example.moviesapp.domain.repository.MovieListRepository
+import com.example.moviesapp.utils.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import okio.IOException
-import retrofit2.HttpException
 import javax.inject.Inject
-import com.example.moviesapp.data.mappers.toMovieEntity
+import retrofit2.HttpException
+
 
 
 class MovieListRepositoryImpl @Inject constructor(
@@ -72,6 +73,36 @@ class MovieListRepositoryImpl @Inject constructor(
             ))
             emit(Resource.Loading(false))
 
+        }
+    }
+
+    override suspend fun searchMovies(
+        query: String,
+        page: Int
+    ): Flow<Resource<List<Movie>>> {
+        return flow {
+            emit(Resource.Loading(true))
+
+            val movieListFromApi = try {
+                movieApi.searchMovies(query, page)
+            } catch (e: IOException) {
+                e.printStackTrace()
+                emit(Resource.Error(message = "Error loading movies"))
+                return@flow
+            } catch (e: HttpException) {
+                e.printStackTrace()
+                emit(Resource.Error(message = "Error loading movies"))
+                return@flow
+            } catch (e: Exception) {
+                e.printStackTrace()
+                emit(Resource.Error(message = "Error loading movies"))
+                return@flow
+            }
+
+            val movies = movieListFromApi.results.map { it.toMovie(null) }
+
+            emit(Resource.Success(movies))
+            emit(Resource.Loading(false))
         }
     }
 

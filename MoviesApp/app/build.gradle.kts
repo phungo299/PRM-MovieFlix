@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    namespace = "com.ahmedapps.moviesapp"
+    namespace = "com.example.moviesapp"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.ahmedapps.moviesapp"
+        applicationId = "com.example.moviesapp"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
@@ -21,7 +21,9 @@ android {
             useSupportLibrary = true
         }
     }
-
+    kotlinOptions {
+        jvmTarget = "17"
+    }
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -34,9 +36,6 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
-    }
-    kotlinOptions {
-        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
